@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 import argparse
+import random
 
 def is_int(s):
     try: 
@@ -14,15 +15,26 @@ def get_number_char(string):
     if len(numbers) > 2 or is_int(numbers[0]) == False or (len(numbers) == 2 and is_int(numbers[1]) == False):
         msg = "%r is not a valid number or range of number (n1-n2)" % string
         raise argparse.ArgumentTypeError(msg)
-    return numbers
+    return list(map(int, numbers))
+
+def run_gen(args):
+    if len(args.n) == 2:
+        end = random.choice(range(args.n[0], args.n[1]))
+    else:
+        end = args.n[0]
+    passwd = ''
+    for i in range(0, end):
+        passwd = passwd + random.choice(args.s)
+    print(passwd)
 
 def main():
     parser = argparse.ArgumentParser(
         description='A tool to generate password')
-    parser.add_argument("-n",  help="Number of characters, it can be eihter a single number or a range (i.e. 10-15)", type=get_number_char)
-    parser.add_argument("-s", help="Specify a string with the characters to be used")
+    parser.add_argument("-n",  help="Number of characters, it can be eihter a single number or a range (i.e. 10-15)", type=get_number_char, default="8-15")
+    parser.add_argument("-s", help="Specify a string with the characters to be used", default="@1234567890!\"§$%&/()=?\\][{^+'#*~_-.:,;|<>qwertzuioplkjhgfdsayxcvbnm")
     args = parser.parse_args()
-    
+    run_gen(args)
+
 
 if __name__== "__main__":
     main()
