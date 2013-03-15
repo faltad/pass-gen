@@ -3,19 +3,19 @@
 import argparse
 import random
 
-def is_int(s):
-    try: 
-        int(s)
-        return True
-    except ValueError:
-        return False
-
 def get_number_char(string):
     numbers = [x.strip(' ') for x in string.split('-')]
-    if len(numbers) > 2 or is_int(numbers[0]) == False or (len(numbers) == 2 and is_int(numbers[1]) == False):
+    try:
+        numbers = list(map(int, numbers))
+        if len(numbers) > 2:
+            raise ValueError
+        if len(numbers) == 2 and numbers[0] > numbers[1]:
+            msg = "%r: the range is not valid (%d > %d)" % (string, numbers[0], numbers[1])
+            raise argparse.ArgumentTypeError(msg)
+    except ValueError:
         msg = "%r is not a valid number or range of number (n1-n2)" % string
-        raise argparse.ArgumentTypeError(msg)
-    return list(map(int, numbers))
+        raise argparse.ArgumentTypeError(msg)    
+    return numbers
 
 def run_gen(args):
     if len(args.n) == 2:
@@ -30,7 +30,7 @@ def run_gen(args):
 def main():
     parser = argparse.ArgumentParser(
         description='A tool to generate password')
-    parser.add_argument("-n",  help="Number of characters, it can be eihter a single number or a range (i.e. 10-15)", type=get_number_char, default="8-15")
+    parser.add_argument("-n",  help="Number of characters, it can be either a single number or a range (i.e. 10-15)", type=get_number_char, default="8-15")
     parser.add_argument("-s", help="Specify a string with the characters to be used", default="@1234567890!\"§$%&/()=?\\][{^+'#*~_-.:,;|<>qwertzuioplkjhgfdsayxcvbnm")
     args = parser.parse_args()
     run_gen(args)
