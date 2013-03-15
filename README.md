@@ -14,6 +14,4 @@ This tool comes with different options:
  - -sp : Use only alphanumeric and a few special characters.
  - -nu : Use only numeric characters.
 
-This tool was written by [faltad] (Jean-Baptiste Poupon)
-
- [faltad]: http://faltad.sbrk.org/
+This tool was written by [faltad](http://faltad.sbrk.org/) - Jean-Baptiste Poupon
