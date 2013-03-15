@@ -17,6 +17,17 @@ def get_number_char(string):
         raise argparse.ArgumentTypeError(msg)    
     return numbers
 
+def check_args(args):
+    if args.a == True:
+        args.s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    elif args.ac == True:
+        args.s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+    elif args.sp == True:
+        args.s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890()&$#*'
+    elif args.nu == True:
+        args.s = '1234567890'
+    return args
+
 def run_gen(args):
     if len(args.l) == 2:
         end = random.choice(range(args.l[0], args.l[1]))
@@ -33,8 +44,13 @@ def main():
         description='A tool to generate password')
     parser.add_argument("-l",  help="Number of characters, it can be either a single number or a range (i.e. 10-15)", type=get_number_char, default="8")
     parser.add_argument("-s", help="Specify a string with the characters to be used", default="@1234567890!\"§$%&/()=?\\][{^+'#*~_-.:,;|<>qwertzuioplkjhgfdsayxcvbnm")
-    parser.add_argument("-n", help="Numbers of generated password", default=1, type=int, required=False)
+    parser.add_argument("-n", help="Numbers of generated password", default=1, type=int)
+    parser.add_argument("-a", help="Only use alphabetical characters", action='store_true')
+    parser.add_argument("-ac", help="Only use alphanumeric characters", action='store_true')
+    parser.add_argument("-sp", help="Only use alphanumeric and a few special characters", action='store_true')
+    parser.add_argument("-nu", help="Only use numeric characters", action='store_true')
     args = parser.parse_args()
+    args = check_args(args)
     run_gen(args)
 
 
