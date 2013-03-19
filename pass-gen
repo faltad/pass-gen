@@ -43,7 +43,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='A tool to generate password')
     parser.add_argument("-l",  help="Number of characters, it can be either a single number or a range (i.e. 10-15)", type=get_number_char, default="8")
-    parser.add_argument("-s", help="Specify a string with the characters to be used", default="@1234567890!\"§$%&/()=?\\][{^+'#*~_-.:,;|<>qwertzuioplkjhgfdsayxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    parser.add_argument("-s", help="Specify a string with the characters to be used", default="@1234567890!\"$%&/()=?\\][{^+'#*~_-.:,;|<>qwertzuioplkjhgfdsayxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ")
     parser.add_argument("-n", help="Numbers of generated password", default=1, type=int)
     parser.add_argument("-a", help="Only use alphabetical characters", action='store_true')
     parser.add_argument("-ac", help="Only use alphanumeric characters", action='store_true')
