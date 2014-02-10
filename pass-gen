@@ -19,11 +19,11 @@ def get_number_char(string):
 
 def check_args(args):
     if args.a == True:
-        args.s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        args.s = 'abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     elif args.ac == True:
-        args.s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+        args.s = 'abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890'
     elif args.sp == True:
-        args.s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890()&$#*'
+        args.s = 'abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890 ()&$#*'
     elif args.nu == True:
         args.s = '1234567890'
     return args
@@ -33,17 +33,35 @@ def run_gen(args):
         end = random.choice(range(args.l[0], args.l[1]))
     else:
         end = args.l[0]
+
+    # split strings by ' ' to have all the different character
+    # sets of the arg.s option
+    list_strings = args.s.split()
+    real_set = "".join(list_strings)
+
     for j in range(0, args.n):
-        passwd = ''
+        passwd = []
         for i in range(0, end):
-            passwd = passwd + random.choice(args.s)
-        print(passwd)
+            passwd.append(random.choice(real_set))
+
+        # ensure that there is always one character
+        # from each character set
+        # to avoid relying on complete randomness
+        choices = [x for x in range(0, end)]
+        backup = list(choices)
+        for i in list_strings:
+            if len(choices) == 0:
+                choices = list(backup)
+            pos = random.choice(choices)
+            passwd[pos] = random.choice(i)
+            choices.remove(pos)
+        print("".join(passwd))
 
 def main():
     parser = argparse.ArgumentParser(
         description='A tool to generate password')
     parser.add_argument("-l",  help="Number of characters, it can be either a single number or a range (i.e. 10-15)", type=get_number_char, default="8")
-    parser.add_argument("-s", help="Specify a string with the characters to be used", default="@1234567890!\"$%&/()=?\\][{^+'#*~_-.:,;|<>qwertzuioplkjhgfdsayxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    parser.add_argument("-s", help="Specify a string with the characters to be used", default="1234567890 @!\"$%&/()=?\\][{^+'#*~_-.:;|<>, qwertzuioplkjhgfdsayxcvbnm ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     parser.add_argument("-n", help="Numbers of generated password", default=1, type=int)
     parser.add_argument("-a", help="Only use alphabetical characters", action='store_true')
     parser.add_argument("-ac", help="Only use alphanumeric characters", action='store_true')
