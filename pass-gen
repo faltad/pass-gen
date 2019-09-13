@@ -1,9 +1,16 @@
-#! /usr/bin/python
+#!/usr/bin/env python3
 
 import argparse
 import random
 
-def get_number_char(string):
+ALPHA = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+NUMERIC = "1234567890"
+ALPHANUMERIC = f"{ALPHA} {NUMERIC}"
+SPECIAL = f"{ALPHANUMERIC} ()&$#*"
+FULL_SPECIAL = SPECIAL + "@!\"%/=?\\][{^+'~_-.:;|<>,"
+
+
+def get_number_char(string: str) -> list:
     numbers = [x.strip(' ') for x in string.split('-')]
     try:
         numbers = list(map(int, numbers))
@@ -14,21 +21,23 @@ def get_number_char(string):
             raise argparse.ArgumentTypeError(msg)
     except ValueError:
         msg = "%r is not a valid number or range of number (n1-n2)" % string
-        raise argparse.ArgumentTypeError(msg)    
+        raise argparse.ArgumentTypeError(msg)
     return numbers
 
-def check_args(args):
-    if args.a == True:
-        args.s = 'abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    elif args.ac == True:
-        args.s = 'abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890'
-    elif args.sp == True:
-        args.s = 'abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890 ()&$#*'
-    elif args.nu == True:
-        args.s = '1234567890'
+
+def check_args(args: argparse.Namespace) -> argparse.Namespace:
+    if args.a is True:
+        args.s = ALPHA
+    elif args.ac is True:
+        args.s = ALPHANUMERIC
+    elif args.sp is True:
+        args.s = SPECIAL
+    elif args.nu is True:
+        args.s = NUMERIC
     return args
 
-def run_gen(args):
+
+def run_gen(args: argparse.Namespace) -> None:
     if len(args.l) == 2:
         end = random.choice(range(args.l[0], args.l[1]))
     else:
@@ -44,8 +53,7 @@ def run_gen(args):
         for i in range(0, end):
             passwd.append(random.choice(real_set))
 
-        # ensure that there is always one character
-        # from each character set
+        # ensure that there is always one character from each character set
         # to avoid relying on complete randomness
         choices = [x for x in range(0, end)]
         backup = list(choices)
@@ -57,11 +65,12 @@ def run_gen(args):
             choices.remove(pos)
         print("".join(passwd))
 
-def main():
-    parser = argparse.ArgumentParser(
-        description='A tool to generate password')
-    parser.add_argument("-l",  help="Number of characters, it can be either a single number or a range (i.e. 10-15)", type=get_number_char, default="10")
-    parser.add_argument("-s", help="Specify a string with the characters to be used", default="1234567890 @!\"$%&/()=?\\][{^+'#*~_-.:;|<>, qwertzuioplkjhgfdsayxcvbnm ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description='A tool to generate password')
+    parser.add_argument("-l",  help="Number of characters, it can be either a single number or a range (i.e. 10-15)",
+                        type=get_number_char, default="10")
+    parser.add_argument("-s", help="Specify a string with the characters to be used", default=FULL_SPECIAL)
     parser.add_argument("-n", help="Numbers of generated password", default=1, type=int)
     parser.add_argument("-a", help="Only use alphabetical characters", action='store_true')
     parser.add_argument("-ac", help="Only use alphanumeric characters", action='store_true')
@@ -72,5 +81,5 @@ def main():
     run_gen(args)
 
 
-if __name__== "__main__":
+if __name__ == "__main__":
     main()
